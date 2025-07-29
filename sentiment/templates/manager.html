@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - Sentiment Analysis</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 30px;
+      background: linear-gradient(135deg, #826950, #ffffff);
+      color: #333;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 30px;
+      padding: 12px 20px;
+      background-color: #5c4d3d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      background-color: #826950;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #5c4d3d;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    #pieChart {
+      max-width: 500px;
+      margin: 0 auto 35px auto;
+      background-color: #fdfaf6;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background-color: #ffffff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      border: 1px solid #eee;
+      padding: 14px 16px;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f0e7dc;
+      color: #5c4d3d;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: #faf7f2;
+    }
+
+    tr:hover {
+      background-color: #f5eee5;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        margin: 15px;
+      }
+
+      #pieChart {
+        width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="{% url 'home' %}" class="back-link">⬅ Back to Home</a>
+
+  <h2>Sentiment Distribution</h2>
+  <canvas id="pieChart"></canvas>
+
+  <h2>All Analyzed Comments</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Comment</th>
+        <th>Sentiment</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for comment in comments %}
+      <tr>
+        <td>{{ comment.text }}</td>
+        <td>{{ comment.sentiment }}</td>
+        <td>{{ comment.created_at|date:"Y-m-d H:i" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" style="text-align:center; color:#aaa;">No comments yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <script>
+    const data = {
+      labels: ['Positive', 'Neutral', 'Negative'],
+      datasets: [{
+        label: 'Sentiment Distribution',
+        data: [
+          {{ sentiment_data.Positive|default:0 }},
+          {{ sentiment_data.Neutral|default:0 }},
+          {{ sentiment_data.Negative|default:0 }}
+        ],
+        backgroundColor: [
+          '#9bc1a3',   // Positive (greenish)
+          '#e1c699',   // Neutral (beige)
+          '#cd5c5c'    // Negative (soft red)
+        ],
+        borderColor: ['#7aa27d', '#d1b383', '#b54848'],
+        borderWidth: 1
+      }]
+    };
+
+    const config = {
+      type: 'pie',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { 
+              font: { size: 14 }, 
+              color: '#333' 
+            }
+          },
+          tooltip: {
+            enabled: true
+          }
+        }
+      }
+    };
+
+    new Chart(document.getElementById('pieChart'), config);
+  </script>
+
+</body>
+</html>
