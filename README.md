@@ -1,7 +1,7 @@
 # Sentiment Analysis Dashboard
 
 This is a sentiment analysis web application built with Django and Chart.js.  
-It allows users to visualize sentiment classification (Positive, Neutral, Negative) in Arabic using a pre-trained model.
+It allows users to visualize sentiment classification (Positive, Neutral, Negative) using a pre-trained model.
 
 ![Sentiment Analysis Dashboard](images/SentimentAnalysis.png)
 
